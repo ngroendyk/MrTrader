@@ -1,0 +1,5 @@
+The idea is if I have other projects (in source form) that my project depends on, I stick them in there as subtrees.
+I also note the DEPS build-deps as well, so that on a vanilla install of ubuntu, I'll know what I need to pull down.
+
+NOTE TO ME: Will need to add some hooks to CMake here to check if these src builds go out of date or something.
+
