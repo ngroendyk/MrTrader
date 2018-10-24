@@ -32,7 +32,7 @@ DeleteAllOf () {
         #Exclude=`echo "$line" | grep "$2"`
         if [[ $InExList == "" ]]; then
             echo "Deleting: $line ..."
-            echo " rm -rf $line"
+            rm -rf "$line"
         else
             echo "NOT Deleting: $line, it is in exclusion list: $InExList"
         fi
