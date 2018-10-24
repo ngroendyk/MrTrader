@@ -56,14 +56,5 @@ DeleteAllOf Makefile $ExclusionList
 DeleteAllOf "*.exc" $ExclusionList
 DeleteAllOf CMakeCache.txt $ExclusionList
 DeleteAllOf CMakeFiles $ExclusionList
+
  
-
-
-
-#rm cmake_install.cmake
-#rm -rf ./CMakeFiles
-#rm CMakeCache.txt
-#
-#rm *.exc
-#rm Makefile
-# 
