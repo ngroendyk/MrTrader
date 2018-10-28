@@ -48,6 +48,7 @@ DeleteAllOf () {
 
 #Make sure intermediate exclusions have space at end.
 ExclusionList="gumbo_parser "
+ExclusionList+="WordNet "
 #ExclusionList+="src "
 
 #Find all the cmade files, Make files and Wipe the slate clean of them.
@@ -70,6 +71,13 @@ cd gumbo_parser
 make clean
 cd ..
 
-
+#--Delete made stuff for WordNet (wrd party project)
+cd WordNet
+make clean
+cd src
+rm -rf WordNet-stamp
+cd ../
+rm -rf tmp
+cd ..
 
  
