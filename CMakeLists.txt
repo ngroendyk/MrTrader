@@ -6,12 +6,6 @@
 cmake_minimum_required (VERSION 2.6)
 project (MrTrader)
 
-
-
-##include the headers and src dirs
-#include_directories(src)
-#include_directories(include)
-
 #Force std c++11, and debug flags. Also want to see the build line
 set(CMAKE_CXX_STANDARD 11)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall")
@@ -20,20 +14,47 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 #Make sure user has boost libs installed
 #find_package(Boost COMPONENTS system thread REQUIRED)
 
-#Build test curl App
-#add_executable(test.exc src/test.cpp src/CurlManager.cpp src/NewsFinder.cpp)
-
-#Link in lib curl
-#target_link_libraries(test.exc curl)
-
 # Make sure all the executables end up in ./bin
 # as per article: 
 #   https://stackoverflow.com/questions/6594796/how-do-i-make-cmake-output-into-a-bin-dir
 #   https://cmake.org/cmake/help/v3.0/variable/CMAKE_BINARY_DIR.html
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-#Make sure our global include dir gets included in all our build lines.
+#Make sure our global header include dir gets included in all our build lines.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+
+# Lets keep CMakeList files out of 3rd party srcs we dont really control, but just use and built from git src.
+
+#--Gumbo Parser (C - HTML 5 Parser)--#
+# Need to try to enforce it to build.
+# Check if the lib is there, if not do its build cycle.
+# Need to setup a target for its lib, so we can link to it when needed.
+ExternalProject_Add(gumboParser_proj
+    PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser 
+    DOWNLOAD_COMMAND "" 
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser
+    CONFIGURE_COMMAND autogen.sh;configure
+    BUILD_COMMAND make
+    INSTALL_COMMAND make
+)
+
+#ExternalProject_Get_Property(gumbo_parser_proj install_dir)
+#gumbo_parser/.libs/libgumbo.so
+
+#Let CMake become aware of our third party libgumbo.so file, we will need to link against.
+add_library(gumbo SHARED IMPORTED)
+
+#Tell CMake where to locate said libgumbo.so file.
+set_property(TARGET gumbo PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser/.libs/libgumbo.so)
+
+#Tell CMake about the dependancy the external project has to libgumbo
+add_dependencies(gumbo gumboParser_proj)
+
+# Need to include any of its headers.
+
+
+##-----Now lets build the rest of the app-----##
 
 #Build the src dir.
 add_subdirectory(src)

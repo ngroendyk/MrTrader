@@ -4,6 +4,6 @@ add_executable(test.exc
     CurlManager.cpp 
     NewsFinder.cpp)
 
-target_link_libraries(test.exc curl)
+target_link_libraries(test.exc curl gumbo)
 
 
