@@ -59,14 +59,34 @@ add_dependencies(gumbo gumbo_parser)
 
 
 ##--Third Party WordNet library--##
+ExternalProject_Add(WordNet
+    PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/WordNet 
+    DOWNLOAD_COMMAND "" 
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/WordNet/src
+    CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/WordNet/configure
+    BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/WordNet
+    BUILD_COMMAND make
+    INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/WordNet
+    INSTALL_COMMAND sudo make install
+)
+#Let CMake become aware of our third party libWN.a file, we will need to link against.
+add_library(WN STATIC IMPORTED)
+
+#Tell CMake where to locate said libWN.a file.
+set_property(TARGET WN PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/WordNet/lib/libWN.a)
+
+#Tell CMake about the dependancy the external project has to libgumbo
+add_dependencies(WN WordNet)
+
+# Need to include any of its headers.
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/WordNet/include)
+
 
 
 ##-----Now lets build the rest of the app-----##
 
 #Build the src dir.
 add_subdirectory(src)
-
-
 
 
 
