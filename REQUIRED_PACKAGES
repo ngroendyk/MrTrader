@@ -1,3 +1,18 @@
-libnss3-dev
+(Ubuntu/deb packages)
+
+
+--BASE PROJECT DEPS--
 libcurl4-gnutls-dev
+
+
+--WORDNET DEPS--
+(maybe needed... not 100%, try a vanilla build without)
+tcl8.6 tk8.6 tcl8.6-dev tk8.6-dev
+
+(Absolutely needed. Wordnet wouldnt build without... should fixits build to not use the gui deps, since we dont need them in this proj)
+sudo apt-get install tcl tcl-dev tk tk-dev
+
+
+--gumbo-parser deps--
+(Not sure, forgot to keep track of them. Guess we will see in a vanilla distro test)
 
