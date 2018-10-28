@@ -13,6 +13,7 @@ Makefile
 !WordNet/doc/man/Makefile
 !WordNet/doc/pdf/Makefile
 !WordNet/doc/ps/Makefile
+!/WordNet/doc/html/*.html
 cmake_install.cmake
 libs/*
 
