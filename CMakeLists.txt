@@ -3,8 +3,12 @@
 # Description: Top level CMake file.
 # CMake recipe for building this project
 
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.2)
 project (MrTrader)
+
+#Include modules we use
+include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+
 
 #Force std c++11, and debug flags. Also want to see the build line
 set(CMAKE_CXX_STANDARD 11)
@@ -30,17 +34,17 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Need to try to enforce it to build.
 # Check if the lib is there, if not do its build cycle.
 # Need to setup a target for its lib, so we can link to it when needed.
-ExternalProject_Add(gumboParser_proj
+#Note the <TARGET> (first parm) needs tothe the directory name of the subtree module/project
+ExternalProject_Add(gumbo_parser
     PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser 
     DOWNLOAD_COMMAND "" 
-    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser
-    CONFIGURE_COMMAND autogen.sh;configure
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser/src
+    CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser/autogen.sh && ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser/configure
+    BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser
     BUILD_COMMAND make
+    INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser
     INSTALL_COMMAND make
 )
-
-#ExternalProject_Get_Property(gumbo_parser_proj install_dir)
-#gumbo_parser/.libs/libgumbo.so
 
 #Let CMake become aware of our third party libgumbo.so file, we will need to link against.
 add_library(gumbo SHARED IMPORTED)
@@ -49,9 +53,12 @@ add_library(gumbo SHARED IMPORTED)
 set_property(TARGET gumbo PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser/.libs/libgumbo.so)
 
 #Tell CMake about the dependancy the external project has to libgumbo
-add_dependencies(gumbo gumboParser_proj)
+add_dependencies(gumbo gumbo_parser)
 
 # Need to include any of its headers.
+
+
+##--Third Party WordNet library--##
 
 
 ##-----Now lets build the rest of the app-----##

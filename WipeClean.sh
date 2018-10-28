@@ -57,4 +57,19 @@ DeleteAllOf "*.exc" $ExclusionList
 DeleteAllOf CMakeCache.txt $ExclusionList
 DeleteAllOf CMakeFiles $ExclusionList
 
+
+
+
+
+
+
+#--Delete third party stuff that was in the exclusuion list--##
+rm -rf gumbo_parser/src/gumbo_parser-*
+rm -rf gumbo_parser/tmp
+cd gumbo_parser
+make clean
+cd ..
+
+
+
  
