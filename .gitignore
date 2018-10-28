@@ -7,6 +7,12 @@ data/*
 CMakeCache.txt
 CMakeFiles/*
 Makefile
+!WordNet/dict/Makefile
+!WordNet/doc/Makefile
+!WordNet/doc/html/Makefile
+!WordNet/doc/man/Makefile
+!WordNet/doc/pdf/Makefile
+!WordNet/doc/ps/Makefile
 cmake_install.cmake
 libs/*
 
