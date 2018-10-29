@@ -8,6 +8,8 @@
 
 #include "NewsFinder.h"
 #include "CurlManager.h" 
+#include "gumbo.h"
+
 #include <string>
 #include <stdint.h>
 #include <iostream>
@@ -32,9 +34,7 @@ NewsFinder::~NewsFinder()
 
 void NewsFinder::AddSeedLink(const string & NextLink)
 {
-    //Can we find it in the set?
-
-    //add it to the set.
+    //add it to the set/see if we can find it in the set.
     if (mSeedLinkUniqs.insert(NextLink).second)
     {
         //was added to set, push into vector
@@ -51,10 +51,49 @@ void NewsFinder::Process()
     {
         mCurlDL.DownloadURL(*iter);
         string PageData(mCurlDL.getData());
-        ProcessForMoreSeedLinks(*iter, PageData); 
+//        ProcessForMoreSeedLinks(*iter, PageData);
+        ProcessForMoreSeedLinks(PageData);
+ 
     }
 }
 
+void NewsFinder::search_for_links(GumboNode* node)
+{
+    if (node->type != GUMBO_NODE_ELEMENT) 
+    {
+        return;
+    }
+    GumboAttribute* href;
+    if (node->v.element.tag == GUMBO_TAG_A &&
+        (href = gumbo_get_attribute(&node->v.element.attributes, "href"))) 
+    {
+        string NewLink(href->value);
+        //Check if its a legit link
+        if (isValidUrl(NewLink))
+        {
+            AddSeedLink(NewLink);
+        }
+    }
+    //Handle the kids.
+    GumboVector* children = &node->v.element.children;
+    for (unsigned int i = 0; i < children->length; ++i)
+    {
+        search_for_links(static_cast<GumboNode*>(children->data[i]));
+    }
+}
+
+
+/** This overload uses gumbo_parser to get its links. **/
+bool NewsFinder::ProcessForMoreSeedLinks( const string & WebPageData)
+{
+    //Send to gumbo parser.
+    GumboOutput* output = gumbo_parse(WebPageData.c_str());
+    search_for_links(output->root);
+    gumbo_destroy_output(&kGumboDefaultOptions, output);
+    return true;
+}
+
+//Original Link crawler. Differrence is we just do a bad ripping job.
 bool NewsFinder::ProcessForMoreSeedLinks(const string & CurLink,
                                          const string & WebPageData)
 {

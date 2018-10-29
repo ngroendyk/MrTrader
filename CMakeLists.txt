@@ -56,6 +56,8 @@ set_property(TARGET gumbo PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}
 add_dependencies(gumbo gumbo_parser)
 
 # Need to include any of its headers.
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/gumbo_parser/src)
+
 
 
 ##--Third Party WordNet library--##

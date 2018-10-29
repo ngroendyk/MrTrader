@@ -10,6 +10,7 @@
 #define NEWSFINDER_H
 
 #include "CurlManager.h" 
+#include "gumbo.h"
 #include <string>
 #include <sstream>
 #include <stdint.h>
@@ -67,8 +68,23 @@ class NewsFinder
     bool ProcessForMoreSeedLinks(const std::string & CurLink,
                                  const std::string & WebPageData);
 
+    /**
+     * Overload for Processing a website. You only pass it the data. This
+     * particular over uses the gumbo-parser to rip out links, which looks 
+     * potentially more thought out then the other approach.
+     *
+     * @param WebPageData The data of the webpage.
+     * @return true
+     */
+    bool ProcessForMoreSeedLinks(const std::string & WebPageData);
+
+    
     /*< Helper func to parse/form better URLs */
     void FilterForSubLinks(const std::string & UnfilteredLink); 
+
+
+    /*< Helper func to do recursive link finding using gumbo_parser */
+    void search_for_links(GumboNode* node);
 
 
   private:
